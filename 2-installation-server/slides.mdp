@@ -2,7 +2,7 @@
 %author: xavki
 
 
--> CONSUL : Installation serveur<-
+-> CONSUL : Installation d'un serveur<-
 
 
 
@@ -37,8 +37,7 @@ sudo apt-get install consul
 Sinon, la méthode plus complète (user...) :
 
 ```
-export VER="1.2.3"
-wget https://releases.hashicorp.com/consul/${VER}/consul_${VER}_linux_amd64.zip 
+wget https://releases.hashicorp.com/consul/1.4.0/consul_1.4.0_linux_amd64.zip
 unzip consul_${VER}_linux_amd64.zip
 sudo mv consul /usr/local/bin/ 
 sudo groupadd --system consul
@@ -53,9 +52,8 @@ sudo chownn -R consul:consul /etc/consul.d
 -----------------------------------------------------------------------------------------
 
 
-
-
 -> Lancer le serveur <-
+
 
 
 
@@ -68,7 +66,9 @@ sudo consul agent -node server1 -data-dir=/var/lib/consul -config-dir=/etc/consu
 
 ----------------------------------------------------------------------------------------
 
+
 -> Via le fichier de conf <-
+
 
 
 Avec configuration par fichier :
@@ -88,7 +88,7 @@ Avec configuration par fichier :
         "only_passing": true
     },
     "enable_syslog": true,
-    "encrypt": "ss70sXQCqX07Yjxti19Frw==",
+    "encrypt": "<keygen>",
     "leave_on_terminate": true,
     "log_level": "INFO",
     "rejoin_after_leave": true,
@@ -103,3 +103,35 @@ Avec configuration par fichier :
 }
 ```
 
+----------------------------------------------------------------------------------------
+
+
+-> Création d'un service dans système d <-
+
+
+
+```
+[Unit]
+Description=Consul Service Discovery Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=consul
+Group=consul
+ExecStart=/usr/local/bin/consul agent	-node=<nom_serveur> \
+	-bind=<serveur_ip> \
+  -advertise=<serbeur_ip> \
+	-data-dir=/var/lib/consul \
+  -config-dir=/etc/consul.d
+
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+TimeoutStopSec=5
+Restart=on-failure
+SyslogIdentifier=consul
+
+[Install]
+WantedBy=multi-user.target
+```

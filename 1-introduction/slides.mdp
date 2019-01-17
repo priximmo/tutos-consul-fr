@@ -48,7 +48,11 @@ Société : Hashicorp (vagrant, terraform...)
 ```
 sudo apt-get install consul
 ```
+attention : la version installé est pas top
 
+```
+https://releases.hashicorp.com/consul/1.4.0/consul_1.4.0_linux_amd64.zip
+```
 
 -------------------------------------------------------------------------------------------------
 
@@ -62,9 +66,9 @@ sudo apt-get install consul
 
 	- remplace les ip dans les applications
 	- remplace les ip/ports dans les services (haproxy...)
+	- healthcheck
 
-	=> plus de mise à jour des confs
-
+	=> réduire et faciliter les maj de conf
 
 
 * facilité pour les maintenances
