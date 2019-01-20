@@ -9,11 +9,18 @@
 
 2 - installation d'un serveur consul
 
-3 - installation d'un client & DNS
+3 - installation consul et systemd
 
-4 - utilisation par haproxy : consul-template pour une conf dynamique
+4 - installation consul agent
 
-5 - utilisation par Nginx
+5 - premier service : appli python
+
+6 - installation haproxy
+
+7 - installation/utilisation de consul-template
+
+8 - conlusion
+
 
 Source : https://www.consul.io/
 
