@@ -46,7 +46,7 @@ sudo mkdir -p /var/lib/consul
 sudo chown -R consul:consul /var/lib/consul 
 sudo chmod -R 775 /var/lib/consul 
 sudo mkdir /etc/consul.d 
-sudo chownn -R consul:consul /etc/consul.d
+sudo chown -R consul:consul /etc/consul.d
 ```
 
 -----------------------------------------------------------------------------------------
@@ -57,15 +57,49 @@ sudo chownn -R consul:consul /etc/consul.d
 
 
 
-
 Avec configuration en ligne de commande et sas fichier de conf :
 
 ```
-sudo consul agent -node server1 -data-dir=/var/lib/consul -config-dir=/etc/consul.d -ui
+consul agent -node server1 -data-dir=/var/lib/consul/ -config-dir /etc/consul.d/ -ui -client 0.0.0.0 -server -bootstrap
 ```
+
+* node : nom su serveur
+
+* data-dir : répertoire de stockage des datas
+
+* config-dir : localisation des fichiers de conf (consul + services)
+
+* server : type de machine (agent / serveur)
+
+* client: adresse d'écoute
+
+* ui : interface graphique
+
+* bootstrap : mode bootstrap
 
 ----------------------------------------------------------------------------------------
 
+-> premier service <-
+
+
+```
+{"service": {"name": "monservice", "tags": ["python"], "port": 5000}}
+```
+
+* prise en compte de la conf
+
+```
+consul reload
+```
+
+* test dns (dnsutils)
+
+```
+dig @127.0.0.1 -p 8600 monservice.service.consul +short
+```
+
+
+ ---------------------------------------------------------------------------------------
 
 -> Via le fichier de conf <-
 
