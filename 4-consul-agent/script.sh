@@ -18,7 +18,7 @@ chown -R consul:consul /etc/consul.d
 
 
 
-############### ficheir de conf ###################################
+############### fichier de conf ###################################
 
 echo '{
     "advertise_addr": "172.17.0.3",
