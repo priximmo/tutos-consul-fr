@@ -44,3 +44,9 @@
 ```
 https://github.com/hashicorp/consul-template
 ```
+
+exemple haproxy :
+
+```
+https://github.com/hashicorp/consul-template/blob/master/examples/haproxy.md
+```

@@ -3,7 +3,7 @@
 
 apt-get update
 
-apt-get install -y wget unzip dnsutils
+apt-get install -y wget unzip dnsutils python-flask
 
 wget https://releases.hashicorp.com/consul/1.4.0/consul_1.4.0_linux_amd64.zip
 unzip consul_1.4.0_linux_amd64.zip
@@ -43,7 +43,7 @@ echo '{
 }' >/etc/consul.d/config.json
 
 
-################## service  ########################################
+################## service systemd ######################################
 
 
 echo '[Unit]
@@ -71,4 +71,21 @@ SyslogIdentifier=consul
 
 [Install]
 WantedBy=multi-user.target' >/etc/systemd/system/consul.service
+
+####################### monservice.json ###########################
+
+echo '
+{"service":
+        {
+    "name": "monservice",
+    "tags": ["python"],
+    "port": 80,
+    "check": {
+      "http": "http://localhost:80/",
+      "interval": "3s"
+    }
+  }
+}' >/etc/consul.d/monservice.json
+
+
 

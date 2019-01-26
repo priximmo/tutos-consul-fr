@@ -10,16 +10,16 @@ global
         timeout client 50000ms
         timeout server 50000ms
 
-frontend "<nom_service>"
-        bind "{{ item.source }}"
+frontend monservice
+        bind :80
         mode http
-        default_backend "{{ item.name }}"
+        default_backend monservice
 
-backend "<nom_service>"
+backend monservice
         mode http
         cookie LBN insert indirect nocache
         option httpclose
         option forwardfor
-        balance roundrobin {{ range service "<nom_service>" }}
+        balance roundrobin {{ range service monservice }}
         server {{ .Node }} {{.Address }}:{{ .Port }} {{ end }}
 

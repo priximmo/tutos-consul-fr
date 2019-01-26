@@ -22,7 +22,7 @@ chown -R consul:consul /etc/consul.d
 echo '{
     "advertise_addr": "172.17.0.2",
     "bind_addr": "172.17.0.2",
-    "bootstrap_expect": 2,
+    "bootstrap_expect": 1,
     "client_addr": "0.0.0.0",
     "datacenter": "mydc",
     "data_dir": "/var/lib/consul",
@@ -89,6 +89,33 @@ mkdir /etc/consul-template
 chown consul:consul /etc/consul-template
 chmod 775 /etc/consul-template
 
+###################### systemd consul-template ##################
+
+echo '
+[Unit]
+Description=Consul Template adon to consul
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=consul
+ExecStart=/usr/local/bin/consul-template \
+  -consul-addr 127.0.0.1:8500 \
+  -template "/etc/consul-template/haproxy.tmpl:/etc/haproxy/haproxy.cfg:service haproxy reload"
+
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+TimeoutStopSec=5
+Restart=on-failure
+SyslogIdentifier=consul
+
+[Install]
+WantedBy=multi-user.target
+' >/etc/systemd/system/consul-template.service
+
+
 ############################# TEMPLATE #########################################################
 
 echo '
@@ -104,16 +131,16 @@ global
         timeout client 50000ms
         timeout server 50000ms
 
-frontend "<nom_service>"
-        bind "{{ item.source }}"
+frontend monservice
+        bind :80
         mode http
-        default_backend "{{ item.name }}"
+        default_backend monservice
 
-backend "<nom_service>"
+backend monservice
         mode http
         cookie LBN insert indirect nocache
         option httpclose
         option forwardfor
-        balance roundrobin {{ range service "<nom_service>" }}
+        balance roundrobin {{ range service monservice }}
         server {{ .Node }} {{.Address }}:{{ .Port }} {{ end }}
 ' >/etc/consul-template/haproxy.tmpl
