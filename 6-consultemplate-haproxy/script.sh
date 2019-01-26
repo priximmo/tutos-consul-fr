@@ -1,3 +1,4 @@
+
 ################# installation consul  ###########################
 
 apt-get update
@@ -17,37 +18,33 @@ chown -R consul:consul /etc/consul.d
 
 
 
-################## fichier de conf ######################################
+############### fichier de conf ###################################
 
 echo '{
-    "advertise_addr": "172.17.0.2",
-    "bind_addr": "172.17.0.2",
-    "bootstrap_expect": 2,
+    "advertise_addr": "172.17.0.3",
+    "bind_addr": "172.17.0.3",
     "client_addr": "0.0.0.0",
     "datacenter": "mydc",
     "data_dir": "/var/lib/consul",
     "domain": "consul",
     "enable_script_checks": true,
     "dns_config": {
-        "enable_truncate": true,
-        "only_passing": true
-    },
+            "enable_truncate": true,
+            "only_passing": true
+        },
     "enable_syslog": true,
     "encrypt": "TeLbPpWX41zMM3vfLwHHfQ==",
     "leave_on_terminate": true,
     "log_level": "INFO",
     "rejoin_after_leave": true,
     "retry_join": [
-        "172.17.0.2"
-    ],
-    "server": true,
-    "start_join": [
-        "172.17.0.2"
-    ],
-    "ui": true
-}' > /etc/consul.d/config.json
+    "172.17.0.2"
+    ]
+}' >/etc/consul.d/config.json
 
-######################### service ######################################
+
+################## service  ########################################
+
 
 echo '[Unit]
 Description=Consul Service Discovery Agent
@@ -60,9 +57,9 @@ Type=simple
 User=consul
 Group=consul
 ExecStart=/usr/local/bin/consul agent \
-  -node=172.17.0.2 \
-  -bind=172.17.0.2 \
-  -advertise=172.17.0.2 \
+  -node=172.17.0.3 \
+  -bind=172.17.0.3 \
+  -advertise=172.17.0.3 \
   -data-dir=/var/lib/consul \
   -config-dir=/etc/consul.d
 
@@ -73,47 +70,5 @@ Restart=on-failure
 SyslogIdentifier=consul
 
 [Install]
-WantedBy=multi-user.target' > /etc/systemd/system/consul.service
+WantedBy=multi-user.target' >/etc/systemd/system/consul.service
 
-
-######################## CONSUL TEMPLATE #######################################################
-
-apt-get update
-apt-get install -y wget unzip net-tools
-wget https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_amd64.zip
-unzip consul-template_0.19.5_linux_amd64.zip
-mv consul-template /usr/local/bin
-chown consul:consul /usr/local/bin/consul-template
-chmod 755 /usr/local/bin/consul-template
-mkdir /etc/consul-template
-chown consul:consul /etc/consul-template
-chmod 775 /etc/consul-template
-
-############################# TEMPLATE #########################################################
-
-echo '
-# template consul template pour haproxy
-
-global
-        daemon
-        maxconn 256
-
-    defaults
-        mode http
-        timeout connect 5000ms
-        timeout client 50000ms
-        timeout server 50000ms
-
-frontend "<nom_service>"
-        bind "{{ item.source }}"
-        mode http
-        default_backend "{{ item.name }}"
-
-backend "<nom_service>"
-        mode http
-        cookie LBN insert indirect nocache
-        option httpclose
-        option forwardfor
-        balance roundrobin {{ range service "<nom_service>" }}
-        server {{ .Node }} {{.Address }}:{{ .Port }} {{ end }}
-' >/etc/consul-template/haproxy.tmpl
