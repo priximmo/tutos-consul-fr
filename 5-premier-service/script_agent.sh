@@ -3,7 +3,7 @@
 
 apt-get update
 
-apt-get install -y wget unzip dnsutils
+apt-get install -y wget unzip dnsutils python-flask net-tools
 
 wget https://releases.hashicorp.com/consul/1.4.0/consul_1.4.0_linux_amd64.zip
 unzip consul_1.4.0_linux_amd64.zip
@@ -43,7 +43,7 @@ echo '{
 }' >/etc/consul.d/config.json
 
 
-################## service  ########################################
+################## service systemD ########################################
 
 
 echo '[Unit]
@@ -72,3 +72,39 @@ SyslogIdentifier=consul
 [Install]
 WantedBy=multi-user.target' >/etc/systemd/system/consul.service
 
+
+####################### mon application ##################################
+
+echo "#!/usr/bin/python
+from flask import Flask
+import socket
+app = Flask(__name__)
+
+
+@app.route('/')
+def hello_world():
+    hostname = socket.gethostname()
+    message = 'Bonjour, je suis ' + hostname + '\n'
+    return message
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+'>/tmp/app/py
+
+
+####################### service consul ####################################
+
+
+echo '
+{"service":
+        {
+    "name": "monservice",
+    "tags": ["python"],
+    "port": 80,
+    "check": {
+      "http": "http://localhost:5000/",
+      "interval": "3s"
+    }
+  }
+}
+' > /etc/consul.d/monservice.json

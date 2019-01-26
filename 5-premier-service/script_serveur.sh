@@ -18,33 +18,37 @@ chown -R consul:consul /etc/consul.d
 
 
 
-############### fichier de conf ###################################
+################## fichier de conf ######################################
 
 echo '{
-    "advertise_addr": "172.17.0.3",
-    "bind_addr": "172.17.0.3",
+    "advertise_addr": "172.17.0.2",
+    "bind_addr": "172.17.0.2",
+    "bootstrap_expect": 2,
     "client_addr": "0.0.0.0",
     "datacenter": "mydc",
     "data_dir": "/var/lib/consul",
     "domain": "consul",
     "enable_script_checks": true,
     "dns_config": {
-            "enable_truncate": true,
-            "only_passing": true
-        },
+        "enable_truncate": true,
+        "only_passing": true
+    },
     "enable_syslog": true,
     "encrypt": "TeLbPpWX41zMM3vfLwHHfQ==",
     "leave_on_terminate": true,
     "log_level": "INFO",
     "rejoin_after_leave": true,
     "retry_join": [
-    "172.17.0.2"
-    ]
-}' >/etc/consul.d/config.json
+        "172.17.0.2"
+    ],
+    "server": true,
+    "start_join": [
+        "172.17.0.2"
+    ],
+    "ui": true
+}' > /etc/consul.d/config.json
 
-
-################## service  ########################################
-
+######################### service ######################################
 
 echo '[Unit]
 Description=Consul Service Discovery Agent
@@ -57,9 +61,9 @@ Type=simple
 User=consul
 Group=consul
 ExecStart=/usr/local/bin/consul agent \
-  -node=172.17.0.3 \
-  -bind=172.17.0.3 \
-  -advertise=172.17.0.3 \
+  -node=172.17.0.2 \
+  -bind=172.17.0.2 \
+  -advertise=172.17.0.2 \
   -data-dir=/var/lib/consul \
   -config-dir=/etc/consul.d
 
@@ -70,5 +74,4 @@ Restart=on-failure
 SyslogIdentifier=consul
 
 [Install]
-WantedBy=multi-user.target' >/etc/systemd/system/consul.service
-
+WantedBy=multi-user.target' > /etc/systemd/system/consul.service
