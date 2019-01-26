@@ -2,7 +2,7 @@
 %author: xavki
 
 
--> CONSUL : Installation d'un serveur<-
+-> CONSUL : Installation d'un serveur <-
 
 
 
@@ -77,95 +77,3 @@ consul agent -node server1 -data-dir=/var/lib/consul/ -config-dir /etc/consul.d/
 
 * bootstrap : mode bootstrap
 
-----------------------------------------------------------------------------------------
-
--> premier service <-
-
-
-```
-{"service": {"name": "monservice", "tags": ["python"], "port": 5000}}
-```
-
-* prise en compte de la conf
-
-```
-consul reload
-```
-
-* test dns (dnsutils)
-
-```
-dig @127.0.0.1 -p 8600 monservice.service.consul +short
-```
-
-
- ---------------------------------------------------------------------------------------
-
--> Via le fichier de conf <-
-
-
-
-Avec configuration par fichier :
-
-```
-{
-    "advertise_addr": "172.17.0.2",
-    "bind_addr": "172.17.0.2",
-    "bootstrap_expect": 2,
-    "client_addr": "0.0.0.0",
-    "datacenter": "mydc",
-    "data_dir": "/var/lib/consul",
-    "domain": "consul",
-    "enable_script_checks": true,
-    "dns_config": {
-        "enable_truncate": true,
-        "only_passing": true
-    },
-    "enable_syslog": true,
-    "encrypt": "<keygen>",
-    "leave_on_terminate": true,
-    "log_level": "INFO",
-    "rejoin_after_leave": true,
-    "retry_join": [
-    	"172.17.0.2"
-    ],
-    "server": true,
-    "start_join": [
-        "172.17.0.2"
-    ],
-    "ui": true
-}
-```
-
-----------------------------------------------------------------------------------------
-
-
--> Création d'un service dans système d <-
-
-
-
-```
-[Unit]
-Description=Consul Service Discovery Agent
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=simple
-User=consul
-Group=consul
-ExecStart=/usr/local/bin/consul agent	-node=<nom_serveur> \
-	-bind=<serveur_ip> \
-  -advertise=<serbeur_ip> \
-	-data-dir=/var/lib/consul \
-  -config-dir=/etc/consul.d
-
-ExecReload=/bin/kill -HUP $MAINPID
-KillSignal=SIGINT
-TimeoutStopSec=5
-Restart=on-failure
-SyslogIdentifier=consul
-
-[Install]
-WantedBy=multi-user.target
-```
