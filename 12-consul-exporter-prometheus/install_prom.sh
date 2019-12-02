@@ -49,3 +49,5 @@ apt-get install -qq -y grafana >/dev/null
 
 
 echo "END - install prometheus"
+
+#docker run -d -p 9107:9107 prom/consul-exporter --consul.server=192.168.1.31:8500
