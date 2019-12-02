@@ -1,10 +1,11 @@
-title: Consul
-author: xavki
+%title: Consul
+%author: xavki
 
 
 # Consul Exporter : Métriques de services
 
 
+<br>
 * consul exporter : affichage des métriques de consul
 	* nombre/noms des services
 	* nombre/noms des instances
@@ -12,12 +13,14 @@ author: xavki
 
 * lien: https://github.com/prometheus/consul_exporter
 
+<br>
 * lancement via docker 
 
 ```
 docker run -d -p 9107:9107 prom/consul-exporter --consul.server=192.168.1.31:8500
 ```
 
+<br>
 * ajout dans prometheus
 
 ```
@@ -32,11 +35,12 @@ scrape_configs:
 # Exemple d'utilisation via Grafana
 
 
+<br>
 * bar gauge
 
 * utilisation de la ressources : consul_health_service_status
 
-* somme d'instance par service 
+* somme d'instances par service 
 
 ```
 sum(consul_health_service_status{status="passing"}) by (service_name)
