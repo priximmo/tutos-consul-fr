@@ -6,6 +6,8 @@
 
 
 <br>
+
+
 * consul exporter : affichage des métriques de consul
 	* nombre/noms des services
 	* nombre/noms des instances
@@ -14,6 +16,8 @@
 * lien: https://github.com/prometheus/consul_exporter
 
 <br>
+
+
 * lancement via docker 
 
 ```
@@ -21,6 +25,8 @@ docker run -d -p 9107:9107 prom/consul-exporter --consul.server=192.168.1.31:850
 ```
 
 <br>
+
+
 * ajout dans prometheus
 
 ```
@@ -36,6 +42,8 @@ scrape_configs:
 
 
 <br>
+
+
 * bar gauge
 
 * utilisation de la ressources : consul_health_service_status

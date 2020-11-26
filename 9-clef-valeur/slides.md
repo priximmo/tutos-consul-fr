@@ -7,30 +7,48 @@ author: xavki
 C'est de la magie et pourtant c'est si simple !!!
 
 <br>
+
+
 * Consul met à disposition sa base pour stocker en clef/valeur
 
 <br>
+
+
 * faire beaucoup de choses (mise à jour conf, variables, larges diffusions)
 
 <br>
+
+
 * très dynamique moins de la seconde
 
 <br>
+
+
 * utilisable par consul-template
 
 <br>
+
+
 * consul-template : template (ex : conf) + commande (ex : reload)
 
 <br>
+
+
 * même principe pour vault (hashicorp) pour les secrets
 
 <br>
+
+
 * mise à jour / consultation par API ou CLI
 
 <br>
+
+
 ATTENTION : la moindre erreur se paie cash (confs notamment = checks avant)
 
 <br>
+
+
 * exemple Nginx:
 		* changement dynamique de index.html
 		* changement de conf (ports) et reload

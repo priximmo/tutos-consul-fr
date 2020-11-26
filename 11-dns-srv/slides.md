@@ -5,6 +5,8 @@
 
 
 <br>
+
+
 * consul comme serveur DNS
 
 * SRV = un peu plus qu'un dns pour faire LB
@@ -14,6 +16,8 @@
 * poids : si même priorité pondération
 
 <br>
+
+
 
 * exemple : 1 master consul + un service
 
@@ -29,6 +33,8 @@ dig @192.168.57.10 -p 8600 myapp.service.consul SRV +short
 
 
 <br>
+
+
 * installation de dnsmasq :
 
 ```
